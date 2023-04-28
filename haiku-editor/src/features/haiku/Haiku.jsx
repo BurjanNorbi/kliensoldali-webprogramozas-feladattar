@@ -1,5 +1,5 @@
 import { Editor } from "./Editor";
-import { HaikuList } from "./Haikus";
+import { HaikuList } from "./HaikuList";
 
 export const Haiku = () => (
   <div>
