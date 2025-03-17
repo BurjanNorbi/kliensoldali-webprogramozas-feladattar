@@ -1,19 +1,19 @@
-import logo from "../../assets/logo.png";
+import Logo from "../assets/logo.png";
 
-export function Menu() {
+const Navbar = () => {
   return (
     <nav className="ui secondary menu">
-      <img src={logo} alt="" />
-      <a className="item" href="">
+      <img src={Logo} />
+      <a className="item" href="index.html">
         <i className="home icon"></i> Home
       </a>
-      <a className="item" href="playlists">
+      <a className="active item" href="playlists.html">
         <i className="headphones icon"></i> My Playlists
       </a>
-      <a className="item" href="tracks">
+      <a className="item" href="tracks.html">
         <i className="music icon"></i> Tracks
       </a>
-      <a className="item" href="search">
+      <a className="item" href="search.html">
         <i className="search icon"></i> Search
       </a>
       <div className="ui right dropdown item">
@@ -33,4 +33,6 @@ export function Menu() {
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;
