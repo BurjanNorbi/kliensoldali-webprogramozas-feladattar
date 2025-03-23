@@ -1,7 +1,13 @@
-import PlayLists from "./pages/PlayLists";
+import Navbar from "./components/Navbar";
+import Playlists from "./pages/Playlists";
 
 function App() {
-  return <PlayLists />;
+  return (
+    <>
+      <Navbar />
+      <Playlists />
+    </>
+  );
 }
 
 export default App;
