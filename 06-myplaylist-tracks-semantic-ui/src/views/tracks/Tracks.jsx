@@ -1,14 +1,17 @@
-import { exampleTracks } from "../../domain/track";
 import { TrackForm } from "./TrackForm";
 import { Track } from "./Track";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TrackServiceContext } from "../../contexts/TrackServiceProvider";
 
 export function Tracks() {
-  const tracks = exampleTracks;
-
+  // States
   const [open, setOpen] = useState(false);
+  const [editedTrack, setEditedTrack] = useState();
+  const { tracks, addTrack, editTrack, deleteTrack } = useContext(TrackServiceContext);
 
-  const handleModalOpen = () => {
+  // Handlers
+  const handleAddNewTrack = () => {
+    setEditedTrack(null);
     setOpen(true);
   };
 
@@ -16,11 +19,33 @@ export function Tracks() {
     setOpen(false);
   };
 
+  const handleSubmit = (e, formState) => {
+    e.preventDefault();
+
+    if (formState.id) {
+      editTrack(formState);
+    } else {
+      addTrack(formState);
+    }
+
+    handleModalClose();
+  };
+
+  const handleDeleteClick = (id) => {
+    deleteTrack(id);
+  };
+
+  const handleEditClick = (track) => {
+    console.log(track);
+    setOpen(true);
+    setEditedTrack(track);
+  };
+
   return (
     <>
       <div className="ui container">
-        <button href="#" className="ui right floated green button" id="newModal">
-          <i onClick={handleModalOpen} className="plus icon"></i>
+        <button onClick={handleAddNewTrack} href="#" className="ui right floated green button" id="newModal">
+          <i className="plus icon"></i>
           New track
         </button>
         <h1>Tracks</h1>
@@ -34,13 +59,13 @@ export function Tracks() {
           </thead>
           <tbody>
             {tracks.map((track) => (
-              <Track key={track.id} track={track} />
+              <Track key={track.id} track={track} onDelete={handleDeleteClick} onEdit={handleEditClick} />
             ))}
           </tbody>
         </table>
       </div>
 
-      <TrackForm open={open} handleModalOpen={handleModalOpen} handleModalClose={handleModalClose} />
+      <TrackForm open={open} onClose={handleModalClose} onSubmit={handleSubmit} editedTrack={editedTrack} />
     </>
   );
 }

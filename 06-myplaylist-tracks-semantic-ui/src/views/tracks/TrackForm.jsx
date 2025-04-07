@@ -1,18 +1,12 @@
-/* eslint-disable react/prop-types */
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "semantic-ui-react";
-import { useState } from "react";
 
-const Field = ({ label, placeholder, name, value, handleInput }) => {
-  // const [value, setValue] = useState("alma");
-
-  // const handleInput = (e) => {
-  //   setValue(e.target.value);
-  // };
-
+/* eslint-disable react/prop-types */
+const Field = ({ label, placeholder, name, value, onInput, ...attrs }) => {
   return (
     <div className="field">
       <label>{label}</label>
-      <input onInput={handleInput} name={name} type="text" placeholder={placeholder} value={value} />
+      <input value={value} onInput={onInput} name={name} type="text" placeholder={placeholder} {...attrs} />
     </div>
   );
 };
@@ -27,63 +21,70 @@ const defaultState = {
   lyricsURL: "",
 };
 
-export function TrackForm({ open, handleModalOpen, handleModalClose }) {
+export function TrackForm({ open, onClose, onSubmit, editedTrack }) {
+  // States
   const [formState, setFormState] = useState(defaultState);
+  const inputRef = useRef();
 
+  const isEdit = !!editedTrack;
+
+  // Effects
+  useEffect(() => {
+    if (open) {
+      setFormState({ ...defaultState, ...editedTrack });
+      inputRef.current.focus();
+    }
+  }, [open, editedTrack]);
+
+  // Handlers
   const handleInput = (e) => {
-    setFormState({ ...formState, [e.taget.name]: e.target.value });
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
   return (
-    <Modal as="form" className="ui modal" open={true} onOpen={handleModalOpen} onClose={handleModalClose}>
-      <i onClick={handleModalClose} className="close icon"></i>
-      <div onClick={handleModalOpen} className="header">
-        Add new Track
-      </div>
+    <Modal open={open} onClose={onClose} as="form" className="ui modal" onSubmit={(e) => onSubmit(e, formState)}>
+      <i onClick={onClose} className="close icon"></i>
+      <div className="header">Add new Track</div>
       <div className="image content">
         <div className="description">
           <div className="ui form">
+            <input type="text" ref={inputRef} />
             <div className="three fields">
               <Field
-                handleInput={handleInput}
                 value={formState.artist}
+                onInput={handleInput}
                 label="Author"
                 placeholder="John Williams"
                 name="artist"
+                required
               />
               <Field
-                handleInput={handleInput}
                 value={formState.title}
+                onInput={handleInput}
                 label="Track name"
                 placeholder="Imperial March"
                 name="title"
               />
-              <Field
-                handleInput={handleInput}
-                value={formState.length}
-                label="Length"
-                placeholder="3:44"
-                name="length"
-              />
+              <Field value={formState.length} onInput={handleInput} label="Length" placeholder="3:44" name="length" />
             </div>
             <div className="three fields">
               <Field
-                handleInput={handleInput}
                 value={formState.spotifyURL}
+                onInput={handleInput}
                 label="Spotify URL"
                 placeholder="https://"
                 name="spotifyURL"
               />
               <Field
-                handleInput={handleInput}
                 value={formState.lyricsURL}
+                onInput={handleInput}
                 label="Lyrics URL"
                 placeholder="https://"
                 name="lyricsURL"
               />
               <Field
-                handleInput={handleInput}
                 value={formState.chordsURL}
+                onInput={handleInput}
                 label="Guitar tab URL"
                 placeholder="https://"
                 name="chordsURL"
@@ -93,11 +94,11 @@ export function TrackForm({ open, handleModalOpen, handleModalClose }) {
         </div>
       </div>
       <div className="actions">
-        <div onClick={handleModalClose} className="ui black deny button">
+        <button onClick={onClose} className="ui black deny button">
           Cancel
-        </div>
-        <button className="ui positive right labeled icon button">
-          Add
+        </button>
+        <button type="submit" className="ui positive right labeled icon button">
+          {isEdit ? "Edit track" : "Add track"}
           <i className="plus icon"></i>
         </button>
       </div>
