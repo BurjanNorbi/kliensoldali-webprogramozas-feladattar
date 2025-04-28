@@ -3,11 +3,21 @@ import App from "./views/App";
 import "./index.css";
 import "./grafilogika.css";
 import { createRoot } from "react-dom/client";
+import { store } from "./state/store";
+import { Provider } from "react-redux";
+import { checkSolution, startGame } from "./state/nonogramSlice";
+import { fetchPuzzles } from "./state/listSlice";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );
+
+store.dispatch(startGame(["##", "  "]));
+store.dispatch(fetchPuzzles());
+store.dispatch(checkSolution());

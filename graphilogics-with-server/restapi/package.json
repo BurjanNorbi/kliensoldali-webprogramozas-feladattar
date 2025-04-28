@@ -52,6 +52,7 @@
     "feathers-authentication-hooks": "^1.0.2",
     "feathers-hooks-common": "^5.0.6",
     "feathers-sequelize": "^6.3.3",
+    "grafilogika-restapi": "file:",
     "helmet": "^4.6.0",
     "sequelize": "^6.19.0",
     "serve-favicon": "^2.5.0",

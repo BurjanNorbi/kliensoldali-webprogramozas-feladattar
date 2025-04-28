@@ -29,11 +29,32 @@ Készíts webes alkalmazást egy ilyen grafilogikai rejtvény megoldására!
    }
    ```
 3. Gondold át a lehetséges akciókat! Például:
+
    - `START_GAME`: megad egy megoldást valamilyen formátumban, például:
+
      ```js
      ["# #", " # ", "# #"];
+
+     // SOLUTION map: szétspliteljük "," szerint, majd minden karakterhez - map: hozzámappelünk egy színt
+
+     // TABLE map: szétspliteljük "," szerint, majd minden karakterhez "FEHÉR"
+
+     // leftNumbers:
+     // [1, 1, 2, 1] => 1121 => [1,1], [1] => [2, 1]
+
+     // upperNumbers:
+     const upperNumbers = solution[0]?.map((e, i) =>
+       solution
+         .map((row) => row[i])
+         .join("")
+         .split("2")
+         .filter((e) => e !== "")
+         .map((e) => e.length)
+     );
      ```
+
    - `CLICK_CELL`: egy cellára kattintunk, megadjuk a cella x-y koordinátáját
+
 4. Ezek alapján készítsd el a Redux store-odat (pl. `state/store.js`)! Itt is több lehetőség van:
    1. Natív [Redux](https://redux.js.org/) elemekkel (alacsony szint):
       - akció konstansok

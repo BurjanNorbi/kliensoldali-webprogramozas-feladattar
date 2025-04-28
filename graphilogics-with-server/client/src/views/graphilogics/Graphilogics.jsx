@@ -1,4 +1,42 @@
+import { useDispatch, useSelector } from "react-redux";
+import { COLORS, fillCell, selectSolutionObject, selectTable } from "../../state/nonogramSlice";
+import { useGetPuzzlesQuery } from "../../state/puzzlesApiSlice";
+
 export const GraphiLogics = () => {
+  const { leftNumbers, upperNumbers } = useSelector(selectSolutionObject);
+  const table = useSelector(selectTable);
+  const dispatch = useDispatch();
+
+  const data = useGetPuzzlesQuery();
+
+  console.log(data);
+
+  const handleLeftClick = (row, column, currentColor) => {
+    dispatch(
+      fillCell({
+        row,
+        column,
+        color:
+          currentColor === COLORS.WHITE ? COLORS.BLACK : currentColor === COLORS.BLACK ? COLORS.WHITE : currentColor,
+      })
+    );
+  };
+
+  const handleRightClick = (e, row, column, currentColor) => {
+    e.preventDefault();
+    dispatch(
+      fillCell({
+        row,
+        column,
+        color: currentColor === COLORS.GRAY ? COLORS.WHITE : currentColor === COLORS.WHITE ? COLORS.GRAY : currentColor,
+      })
+    );
+  };
+
+  if (table.length === 0) {
+    return <p>Game is loading...</p>;
+  }
+
   return (
     <table id="layout">
       <tbody>
@@ -8,16 +46,9 @@ export const GraphiLogics = () => {
             <table id="felso">
               <tbody>
                 <tr>
-                  <td>
-                    <span>1</span>
-                    <span>2</span>
-                  </td>
-                  <td>
-                    <span>1</span>
-                  </td>
-                  <td>
-                    <span>1</span>
-                  </td>
+                  {upperNumbers.map((cell, i) => (
+                    <td key={i}>{cell}</td>
+                  ))}
                 </tr>
               </tbody>
             </table>
@@ -27,51 +58,39 @@ export const GraphiLogics = () => {
           <td>
             <table id="bal">
               <tbody>
-                <tr>
-                  <td>
-                    <span>1</span>
-                    <span>1</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>
-                    <span>1</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span>2</span>
-                  </td>
-                </tr>
+                {leftNumbers.map((row, i) => (
+                  <tr key={i}>
+                    {row.map((color, j) => (
+                      <td key={j}>{color}</td>
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </td>
           <td>
             <table id="tabla">
               <tbody>
-                <tr>
-                  <td className="feher"></td>
-                  <td className="szurke"></td>
-                  <td className="fekete"></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                {table.map((row, i) => (
+                  <tr key={i}>
+                    {row.map((color, j) => (
+                      <td
+                        onClick={() => handleLeftClick(i, j, color)}
+                        onContextMenu={(e) => handleRightClick(e, i, j, color)}
+                        key={j}
+                        className={
+                          color === COLORS.WHITE
+                            ? "feher"
+                            : color === COLORS.GRAY
+                            ? "szurke"
+                            : color === COLORS.BLACK
+                            ? "fekete"
+                            : "feher"
+                        }
+                      ></td>
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </td>
